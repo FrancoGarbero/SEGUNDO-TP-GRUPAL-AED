@@ -18,7 +18,7 @@ struct fecha
 	int anio;
 };
 
-struct registro
+struct registro//Mascota
 {
 	palabra ApeYNom;
 	palabra Domicilio;
@@ -29,11 +29,30 @@ struct registro
 	fecha fec;
 };
 
+struct fecha1
+{
+	int dia;
+	int mes;
+	int anio;
+};
+
+struct registro1//Turno
+{
+	int Matricula;
+	fecha1 fech;
+	int dni;
+	palabra Atencion;
+};
+
+
 main()
 {
 	int opc=0;
 	registro mascota; //Declarar registro de mascotas
 	FILE*arch;//Variable puntero de mascotas
+	
+	registro1 turno; //Declarar registro de turnos
+	FILE*arch1;//Variable puntero de turnos
 	
 	do{
 		opc = menuPrincipal();
@@ -91,7 +110,44 @@ main()
 				break;
 			}
 			case 3:
+			{
+				system("CLS");	
+				arch1 = fopen("Turnos.dat","r+b");
+				if(arch1 == NULL)
+				{
+					fclose(arch1);
+					arch1= fopen("Turnos.dat","w+b");
+				}
+				
+				printf("-Registrar turno-\n\n");
+				_flushall();
+				
+				printf("Matricula del Veterinario: ");
+				scanf("%d", &turno.Matricula);
+				
+				printf("\n*Fecha*");
+				printf("\n\nDia: ");
+				scanf("%2d", &turno.fech.dia);
+				printf("\nMes: ");
+				scanf("%2d",  &turno.fech.mes);
+				printf("\nAnio: ");
+				scanf("%4d", &turno.fech.anio);
+				
+				printf("\n\nDNI del duenio: ");
+				scanf("%d", &turno.dni);
+				_flushall();
+				
+				printf("\nDetalle de la atencion: ");
+				gets(turno.Atencion);
+				
+				fwrite(&turno, sizeof (registro1), 1, arch1 );
+				
+				fclose(arch1);
+				
+				system("Pause");
+				
 				break;
+			}
 			case 4:
 				break;
 				

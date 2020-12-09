@@ -27,13 +27,13 @@ main()
 	FILE *archUs = fopen("Usuarios.dat","r+b");
 	if(archUs == NULL){
 		fclose(archUs);
-		archUs = fopen("Usuarios.dat","a+b")
+		archUs = fopen("Usuarios.dat","a+b");
 	}
 	
 	FILE *archVet = fopen("Veterinarios.dat","r+b");
 	if(archVet == NULL){
 		fclose(archVet);
-		archVet = fopen("Veterinarios.dat","a+b")
+		archVet = fopen("Veterinarios.dat","a+b");
 	}
 		
 	int opc=0;
@@ -89,6 +89,7 @@ int menuPrincipal()
 
 void registroVet(FILE *archVet)
 {
+	archVet=fopen("Veterinarios.dat","r+b");
 	veterinario regVet;
 	
 	_flushall();
@@ -106,6 +107,8 @@ void registroVet(FILE *archVet)
 	scanf("%d",&regVet.telefono);
 	printf("\n\n\t\t Contrasenia para ingreso: ");
 	
+	fwrite(&regVet, sizeof(veterinario), 1, archVet);
+	fclose(archVet);
 	
 }
 

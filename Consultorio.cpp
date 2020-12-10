@@ -2,23 +2,30 @@
 #include <stdlib.h>
 #include <string.h>
 
-void menu(bool &salir, bool &login);
-void inicioSesion(bool &login,int copMatricula);
+void menu(bool &salir, bool &login, FILE *vet);
+void inicioSesion(bool &login,int &copMatricula,FILE *vet);
 void listaEspera(int copMatricula);
 void registrarEvolucion();
- 
-
+bool comprobacion(int auxUsuario,char auxContrasena[20],FILE *vet); 
+struct veterinario{
+	char apynom[60];
+	int matricula;
+	int dni;
+	int telefono;
+	char contra[10];
+};
  
 main()
 {
+	FILE *vet; 
 	bool salir=false,login=false;
-
+	
 		
 	printf("BIENVENIDO AL MODULO CONSULTORIO");
 	printf("\n-----------------------------------");
 	do
 	{
-		menu(salir,login);	
+		menu(salir,login,vet);	
 	}
 	while(salir==false);
 	
@@ -26,7 +33,7 @@ main()
 	
 }
 
-void menu(bool &salir, bool &login)
+void menu(bool &salir, bool &login, FILE *vet)
 {
 	int seleccion;
 	int copMatricula;//copia el numero de matrucula para comparar en turnos, asi no se tiene que recargar;
@@ -38,7 +45,7 @@ void menu(bool &salir, bool &login)
 		switch(seleccion)
 		{
 			case 1:
-				inicioSesion(login,copMatricula); 
+				inicioSesion(login,copMatricula,vet); 
 				break;
 				
 			case 2:
@@ -76,19 +83,27 @@ void menu(bool &salir, bool &login)
 	
 }
 
-void inicioSesion(bool &login,int copMatricula)
+void inicioSesion(bool &login,int &copMatricula,FILE *vet)
 {
-	char auxUsuario[20], auxContrasena[20];
-	login=true; //borrar esto ma tarde	
+	char auxContrasena[20];
+	int auxUsuario; 
+	login=false; //borrar esto ma tarde	
 	do{
-		printf("\nUSUARIO: ");
+		printf("\nMATRICULA: ");
 		_flushall();
-		gets(auxUsuario);
+		scanf("%d",&auxUsuario);
 		_flushall();
 	
 		printf("\nCONTRASENA: ");
 		gets(auxContrasena);
 		_flushall();
+		
+		if(comprobacion(auxUsuario,auxContrasena,vet)==true)
+		{
+			login=true;
+			copMatricula=auxUsuario;
+			break;
+		}
 		
 		//comprobacion de usuario y contraseña que dara true o false en ingreso de sesion
 		//
@@ -144,4 +159,45 @@ void registrarEvolucion()
 	}
 	
 	
+}
+
+bool comprobacion(int auxUsuario,char auxContrasena[20],FILE *vet)
+{
+	bool inicio=false;
+	veterinario regVet;
+	vet=fopen("Veterinarios.dat","r");
+	
+	fread(&regVet, sizeof(veterinario), 1, vet);
+
+	if (vet==NULL)
+	{
+   		perror("No se puede abrir o no se registro ningun veterinario");
+   		return -1;
+	}
+	while(!feof(vet))
+	{
+		if(auxUsuario==regVet.matricula)
+		{
+			printf("\nEl usuario existe");
+			//a continuacion se compararia la contrasena
+			inicio=true;
+		}
+		fread(&regVet, sizeof(veterinario), 1, vet);
+		
+	}
+	
+	if(inicio==true)
+	{
+		printf("Se inicio sesion correctamente");
+		fclose(vet);
+		return(true);
+	}
+	else
+	{
+		printf("No se pudo iniciar sesion, pruebe nuevamente");
+		fclose(vet);
+		return(false);
+	}
+	
+	//hace falta una forma de mantener registrado el veterinario, tal vez con el aux que guarda la matricula registrada?
 }

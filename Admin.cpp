@@ -115,6 +115,7 @@ void registroVet(FILE *archVet)
 void registroAsist(FILE *archUs)
 {
 	usuario regUs;
+	archUs = fopen("Usuarios.dat","r+b");
 	
 	_flushall();
 	system("CLS");
@@ -124,8 +125,12 @@ void registroAsist(FILE *archUs)
 	printf("\n\n\t\t Ingrese Apellido y nombre: ");
 	gets(regUs.apynom);
 	printf("\n\n\t\t Usuario para ingreso: ");
-
+	gets(regUs.user);
 	printf("\n\n\t\t Contrasenia para ingreso: ");
+	gets(regUs.contra);
+	fwrite(&regUs, sizeof(usuario), 1, archUs);
+	
+	fclose(archUs);
 }
 
 int atenciones()

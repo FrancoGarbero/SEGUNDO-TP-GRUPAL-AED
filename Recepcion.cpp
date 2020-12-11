@@ -41,7 +41,7 @@ struct registro1//Turno
 	int Matricula;
 	fecha1 fech;
 	int dni;
-	palabra Atencion;
+	char Atencion[280];
 };
 
 

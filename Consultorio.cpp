@@ -6,14 +6,45 @@ void menu(bool &salir, bool &login, FILE *vet);
 void inicioSesion(bool &login,int &copMatricula,FILE *vet);
 void listaEspera(int copMatricula);
 void registrarEvolucion();
-bool comprobacion(int auxUsuario,char auxContrasena[20],FILE *vet); 
-struct veterinario{
+bool comprobacion(int auxUsuario,char auxContrasena[20],FILE *vet);
+typedef char palabra[60];
+
+
+struct fecha //FECHA, CON UNA SOLA BASTA :)
+{
+	int dia;
+	int mes;
+	int anio;
+};
+
+struct veterinario{ //INFO DE LOS VETERINARIOS
 	char apynom[60];
 	int matricula;
 	int dni;
 	int telefono;
 	char contra[10];
 };
+
+struct registro1//STRUCT PARA TURNOS
+{
+	int Matricula;
+	fecha fech;
+	int dni;
+	palabra Atencion;
+};
+
+struct registro//DATOS DE MASCOTA
+{
+	palabra ApeYNom;
+	palabra Domicilio;
+	int DNI;
+	palabra Localidad;
+	float Peso;
+	int Telefono;
+	fecha fec;
+};
+
+
  
 main()
 {
@@ -36,7 +67,7 @@ main()
 void menu(bool &salir, bool &login, FILE *vet)
 {
 	int seleccion;
-	int copMatricula;//copia el numero de matrucula para comparar en turnos, asi no se tiene que recargar;
+	int copMatricula=0;//copia el numero de matrucula para comparar en turnos, asi no se tiene que recargar;
 	do
 	{
 		printf("\n\n1.- Iniciar Sesion\n2.- Visualizar Lista de Espera de Turnos (informe)\n3.- Registrar Evolucion de la Mascota\n4.- Cerrar la aplicacion.\n\nIngrese una opcion: ");
@@ -45,12 +76,14 @@ void menu(bool &salir, bool &login, FILE *vet)
 		switch(seleccion)
 		{
 			case 1:
+				system("CLS");
 				inicioSesion(login,copMatricula,vet); 
 				break;
 				
 			case 2:
 				if (login==true)
 				{
+					system("CLS");
 					listaEspera(copMatricula);	
 				}
 				else
@@ -63,6 +96,7 @@ void menu(bool &salir, bool &login, FILE *vet)
 			case 3:
 				if (login==true)
 				{
+					system("CLS");
 					registrarEvolucion();	
 				}
 				else
@@ -101,7 +135,7 @@ void inicioSesion(bool &login,int &copMatricula,FILE *vet)
 		if(comprobacion(auxUsuario,auxContrasena,vet)==true)
 		{
 			login=true;
-			copMatricula=auxUsuario;
+			copMatricula=auxUsuario;//aqui se realizara la copia de la matricula
 			break;
 		}
 		
@@ -109,37 +143,85 @@ void inicioSesion(bool &login,int &copMatricula,FILE *vet)
 		//
 	}
 	while(login==false);
-	//aqui se realizara la copia de la matricula
+	
 	//se cierra
 }
 
 void listaEspera(int copMatricula)
 {
-	int contador=1; //para numerar turnos;
-	printf("Aca van los turnos");
-	//fopen ("turnos.dat","r");
-	//fread espacio 1
-	//while(!feof(mascotas.dat)
+	registro1 turno;
+	registro mascota;
+	
+	FILE *T ,*M;//T por turno, M por mascota
+	T=fopen("turnos.dat","r");
+	M=fopen("mascotas.dat","r");
+	int contador=1; //para numerar turnos, Puramente visual
+	fread(&turno, sizeof(registro1), 1, T);
+	fread(&mascota, sizeof(registro), 1, M);
+	while(!feof(T))
 	{
-		//if(MatriculadeVeterinario==copMatricula)
+		if(turno.Matricula==copMatricula)
 		{
-			//printf("Turno %d\n=======",contador);
-			//printf("Nombre
+			printf("Turno %d\n=========",contador);
+			printf("\nFecha: %d|%d|%d", turno.fech.dia,turno.fech.mes,turno.fech.anio);
+			printf("\nDNI: %d",turno.dni);
+			if(turno.Atencion!=NULL)
+			{
+				printf("\nNotas anteriores: ");
+				gets(turno.Atencion);	
+			}
+			else
+			{
+				printf("\nNo esxiten notas anteriores");	
+			}
+			while(!feof(M))
+			{
+				if(mascota.DNI==turno.dni)
+				{
+					printf("\nNombre de mascota: ");
+					puts(mascota.ApeYNom);
+					printf("Domicilio:");
+					puts(mascota.Domicilio);
+					printf("Localidad:");
+					puts(mascota.Localidad);
+					printf("Peso: %.2f Kg",mascota.Peso);
+					printf("\nTelefono: %d",mascota.Telefono);
+					printf("\n\n");		
+				
+					rewind(M);
+					break;	
+				}
+				
+			}
+			
+			//SI TENGO QUE MOSTRAR INFO DE LA MASCOTA AQUI, ABRO LA OTRA; COMPARO DNI; REWINDEO LA INFO DE MASCOTA DESPUES DE IMPRIMIRLA RE ABRO LA OTRA;
+			
 			//printf todos los datos\n
 			//pasa al siguiente dato
-				
+			contador++;
 		} 
 		
-				
+		fread(&turno, sizeof(registro1), 1, T);			
 	}
+	fclose(M);
+	fclose(T);
+	system("PAUSE");
 	//se carga el archivo y se muestra	
 }
 
 void registrarEvolucion()
 {
-	
+	bool buscar;
 	int auxDni;
 	char auxEvolucion[380];
+	
+	printf("Buscar mascota");
+	do
+	{
+		
+	}
+	while (buscar==true);
+	
 	//abre archivo de mascotas
 	//leer
 	//printf("DNI del dueño: ");//para identificar en que espacio del fichero se guardara la info, puedo usar dni o cualquier otro dato si es mas facil
@@ -199,5 +281,6 @@ bool comprobacion(int auxUsuario,char auxContrasena[20],FILE *vet)
 		return(false);
 	}
 	
-	//hace falta una forma de mantener registrado el veterinario, tal vez con el aux que guarda la matricula registrada?
+	system("PAUSE");
+	//hace falta una forma de mantener registrado el veterinario, con el aux que guarda la matricula registrada o un bool login
 }

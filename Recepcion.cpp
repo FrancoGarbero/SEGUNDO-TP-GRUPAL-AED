@@ -6,10 +6,14 @@
 typedef char palabra[60];
 
 int menuPrincipal();
+void inicioSesion(bool &login);
+bool comprobacion(char auxUsuario[10], char auxContrasena[20]);
 
-
-
-
+struct usuario{
+	char user[10];
+	char contra[10];
+	char apynom[60];
+};
 
 struct fecha
 {
@@ -41,7 +45,7 @@ struct registro1//Turno
 	int Matricula;
 	fecha1 fech;
 	int dni;
-	char Atencion[280];
+	char Atencion[380];
 };
 
 
@@ -54,11 +58,19 @@ main()
 	registro1 turno; //Declarar registro de turnos
 	FILE*arch1;//Variable puntero de turnos
 	
+	bool salir=false,login=false; //Se usa para comprbar eñ inicio de sesion
+	usuario regUs;
+	
 	do{
 		opc = menuPrincipal();
 		switch(opc)
 		{
-			case 1: 
+			case 1:
+			{
+				system("CLS");
+				inicioSesion(login); 
+				break;
+			} 
 		    	break;
 			case 2:
 			{
@@ -174,4 +186,89 @@ int menuPrincipal(){
 	printf("\n\n\t\t     Seleccione una Opcion: "); 
 	scanf("%d", &op);
 	return op;
+}
+
+
+/*--------------------------------------------------------*/
+
+
+void inicioSesion(bool &login)
+{
+	FILE *archUs = fopen("Usuarios.dat","r+b");
+	char auxContrasena[20];
+	char auxUsuario[10]; 
+	login=false; 
+	do{
+		printf("\nUSUARIO: ");
+		_flushall();
+		gets(auxUsuario);
+		_flushall();
+	
+		printf("\nCONTRASENA: ");
+		gets(auxContrasena);
+		_flushall();
+		
+		if(comprobacion(auxUsuario,auxContrasena)==true)
+		{
+			login=true;
+			//copMatricula=auxUsuario;//aqui se realizara la copia de la matricula
+			break;
+		}
+		
+		//comprobacion de usuario y contraseña que dara true o false en ingreso de sesion
+		//
+	}
+	while(login==false);
+	
+	//se cierra
+}
+
+
+/*-----------------------------------------------------------------*/
+
+
+bool comprobacion(char auxUsuario[10],char auxContrasena[20])
+{
+	bool inicio=false;
+	
+	FILE *archUs = fopen("Usuarios.dat","r+b");
+	
+	usuario regUs;
+	
+	fread(&regUs, sizeof(usuario), 1, archUs);
+
+	if (archUs==NULL)
+	{
+   		perror("No se puede abrir o no se registro ningun veterinario");
+   		return -1;
+	}
+	while(!feof(archUs))
+	{
+		if(strcmp(auxUsuario, regUs.user)==0)
+		{
+			printf("\nEl usuario existe");
+			//a continuacion se compararia la contrasena
+			inicio=true;
+			system("PAUSE");
+		}
+		fread(&regUs, sizeof(usuario), 1, archUs);	
+	}
+	
+	if(inicio==true)
+	{
+		printf("Se inicio sesion correctamente");
+		fclose(archUs);
+		return(true);
+		system("PAUSE");
+	}
+	else
+	{
+		printf("No se pudo iniciar sesion, pruebe nuevamente");
+		fclose(archUs);
+		return(false);
+		system("PAUSE");
+	}
+	
+	system("PAUSE");
+	//hace falta una forma de mantener registrado el veterinario, con el aux que guarda la matricula registrada o un bool login
 }

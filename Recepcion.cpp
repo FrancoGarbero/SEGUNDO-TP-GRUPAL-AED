@@ -161,6 +161,37 @@ main()
 				break;
 			}
 			case 4:
+				system ("CLS");
+				
+				printf("*Listado de atenciones: \n\n");
+
+				arch = fopen("Mascotas.dat","r+b");
+				
+				arch1 = fopen("Turnos.dat","r+b");
+				
+				fread(&mascota, sizeof (registro), 1, arch);
+				
+				while(!feof(arch))
+				{
+					_flushall();
+					puts(mascota.ApeYNom);
+					fread(&mascota, sizeof(registro), 1, arch);
+				}
+				
+				fread(&turno, sizeof (registro1), 1, arch1);
+				
+				while(!feof(arch1))
+				{
+						printf("Matricula del veterinario: %d\n", turno.Matricula);
+						printf("Fecha: %d/%d/%d\n", turno.fech.dia, turno.fech.mes, turno.fech.anio);
+						
+						fread(&turno, sizeof(registro1), 1, arch1);
+				}
+				
+				fclose(arch);
+				fclose(arch1);
+				
+				system("Pause");
 				break;
 				
 			default:	
@@ -216,7 +247,6 @@ void inicioSesion(bool &login)
 		}
 		
 		//comprobacion de usuario y contraseña que dara true o false en ingreso de sesion
-		//
 	}
 	while(login==false);
 	
@@ -267,8 +297,8 @@ bool comprobacion(char auxUsuario[10],char auxContrasena[20])
 		fclose(archUs);
 		return(false);
 		system("PAUSE");
+		
 	}
 	
 	system("PAUSE");
-	//hace falta una forma de mantener registrado el veterinario, con el aux que guarda la matricula registrada o un bool login
 }

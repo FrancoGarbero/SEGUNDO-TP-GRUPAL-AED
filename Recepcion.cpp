@@ -75,7 +75,7 @@ main()
 			case 2:
 			{
 				system("CLS");
-				arch = fopen("Mascotas.dat","r+b");
+				arch = fopen("Mascotas.dat","a+b");
 				if(arch == NULL)
 				{
 					fclose(arch);
@@ -114,7 +114,7 @@ main()
 				printf("\nAnio: ");
 				scanf("%4d", &mascota.fec.anio);
 				
-				fwrite(&mascota, sizeof (registro), 1, arch );
+				fwrite(&mascota, sizeof(registro), 1, arch );
 				
 				fclose(arch);
 				
@@ -124,7 +124,7 @@ main()
 			case 3:
 			{
 				system("CLS");	
-				arch1 = fopen("Turnos.dat","r+b");
+				arch1 = fopen("Turnos.dat","a+b");
 				if(arch1 == NULL)
 				{
 					fclose(arch1);
@@ -152,7 +152,7 @@ main()
 				printf("\nDetalle de la atencion: ");
 				gets(turno.Atencion);
 				
-				fwrite(&turno, sizeof (registro1), 1, arch1 );
+				fwrite(&turno, sizeof(registro1), 1, arch1 );
 				
 				fclose(arch1);
 				
@@ -170,15 +170,20 @@ main()
 				
 				arch1 = fopen("Turnos.dat","r+b");
 				
-				fread(&mascota, sizeof (registro), 1, arch);
+				rewind(arch);
+				fread(&mascota, sizeof(registro), 1, arch);
 				
+				int c=0;
 				while(!feof(arch))
 				{
 					_flushall();
-					puts(mascota.ApeYNom);
+					c++;
+					printf("%s",mascota.ApeYNom);
+					printf("%d",c);
 					fread(&mascota, sizeof(registro), 1, arch);
+					
 				}
-				
+				rewind(arch1);
 				fread(&turno, sizeof (registro1), 1, arch1);
 				
 				while(!feof(arch1))

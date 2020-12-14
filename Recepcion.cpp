@@ -161,6 +161,7 @@ main()
 				break;
 			}
 			case 4:
+			{
 				system ("CLS");
 				
 				printf("*Listado de atenciones: \n\n");
@@ -193,7 +194,7 @@ main()
 				
 				system("Pause");
 				break;
-				
+			}
 			default:	
 				system("PAUSE");
 		}	

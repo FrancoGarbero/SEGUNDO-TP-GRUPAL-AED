@@ -20,11 +20,11 @@ struct veterinario{
 
 int menuPrincipal();
 void registroVet(FILE *archVet);
-void comprobarContVet(veterinario regVet.contra, int &b);
+void comprobarContVet(veterinario regVet, int &b,char auxCont[32]);
 void registroAsist(FILE *archUs);
-void comprobarUserAsist(usuario regUs.user, int &b,FILE *&archUs);
-void comprobarContAsist(usuario regUs.contra, int &b);
-int usuarioRepetido(FILE *&archUs, usuario regUs.user);
+void comprobarUserAsist(usuario regUs, int &b,FILE *&archUs,char auxUs[10]);
+void comprobarContAsist(usuario regUs, int &b,char auxC[32]);
+int usuarioRepetido(FILE *&archUs, usuario regUs,char auxUs[10]);
 int atenciones();
 int ranking();
 
@@ -101,6 +101,7 @@ void registroVet(FILE *archVet)
 	archVet=fopen("Veterinarios.dat","r+b");
 	veterinario regVet;
 	int b;
+	char auxCont[32];
 	
 	_flushall();
 	system("CLS");
@@ -127,8 +128,8 @@ void registroVet(FILE *archVet)
 	while (b==0)
 	{
 		printf("\n\n\t\t Contrasenia: ");
-		gets(regVet.contra);
-		comprobarContVet(regVet.contra,b);
+		gets(auxCont);
+		comprobarContVet(regVet,b,auxCont);
 	}	
 	
 	fwrite(&regVet, sizeof(veterinario), 1, archVet);
@@ -136,18 +137,18 @@ void registroVet(FILE *archVet)
 	
 }
 
-void comprobarContVet(veterinario regVet.contra, int &b)
+void comprobarContVet(veterinario regVet, int &b,char auxCont[32])
 {
-	veterinario regVet;
 	char aux,aux1;
 	int largo,min=0,may=0,num=0;
+	FILE *archVet;
 	
-	largo = strlen(regVet.contra);
+	largo = strlen(auxCont);
 	if(largo>= 6 && largo <= 32)
 	{
-		for(int i==;i<largo;i++)
+		for(int i=0;i<largo;i++)
 		{
-			if(isalnum(regVet.contra[i])==0)
+			if(isalnum(auxCont[i])==0)
 			{
 				num=1;
 			}	
@@ -156,15 +157,15 @@ void comprobarContVet(veterinario regVet.contra, int &b)
 		{
 			for(int i=0;i<largo;i++)
 			{
-				if(isupper(regVet.contra[i])!=0)
+				if(isupper(auxCont[i])!=0)
 				{
 					may=1;
 				}
-				else if(islower(regVet.contra[i])!=0)
+				else if(islower(auxCont[i])!=0)
 				{
 					min=1;
 				}
-				else if(isdigit(regVet.contra[i])!=0)
+				else if(isdigit(auxCont[i])!=0)
 				{
 					num=1;
 				}
@@ -175,7 +176,7 @@ void comprobarContVet(veterinario regVet.contra, int &b)
 				may=0;
 				for(int i=0;i<largo;i++)
 				{
-					if(isdigit(regVet.contra[i])!=0)
+					if(isdigit(auxCont[i])!=0)
 					{
 						num++;
 						if(num==4)
@@ -184,7 +185,7 @@ void comprobarContVet(veterinario regVet.contra, int &b)
 							i=largo;
 						}
 					}
-					else if(isalpha(regVet.contra[i])!=0)
+					else if(isalpha(auxCont[i])!=0)
 					{
 						num=0;
 					}
@@ -194,13 +195,13 @@ void comprobarContVet(veterinario regVet.contra, int &b)
 					num=0;
 					for(int i=0;i<largo;i++)
 					{
-						if(isalpha(regVet.contra[i])!=0)
+						if(isalpha(auxCont[i])!=0)
 						{
 							num++;
 							if(num==2)
 							{
-								aux = toupper(regVet.contra[i]);
-								aux1 = toupper(regVet.contra[i-1]);
+								aux = toupper(auxCont[i]);
+								aux1 = toupper(auxCont[i-1]);
 								
 								if(aux1 == aux-1)
 								{
@@ -211,7 +212,7 @@ void comprobarContVet(veterinario regVet.contra, int &b)
 						}
 						else
 						{
-							num=0
+							num=0;
 						}
 					}
 					if(may==0)
@@ -242,7 +243,9 @@ void comprobarContVet(veterinario regVet.contra, int &b)
 	{
 		printf("\n\tError: la contrasenia debe tener entre 6-32 caracteres\n");
 	}
-		
+	
+	strcpy(regVet.contra,auxCont);		
+	fwrite(&regVet,sizeof(veterinario),1,archVet);
 }
 
 void registroAsist(FILE *archUs)
@@ -250,6 +253,7 @@ void registroAsist(FILE *archUs)
 	usuario regUs;
 	archUs = fopen("Usuarios.dat","r+b");
 	int b;
+	char auxUs[10],auxC[32];
 	
 	_flushall();
 	system("CLS");
@@ -266,12 +270,12 @@ void registroAsist(FILE *archUs)
 	printf("\n\n\t\t *Debe tener entre 6-10 caracteres");
 	
 	_flushall();
-	b=0
+	b=0;
 	while(b==0)
 	{
 		printf("\n\n\t\t Usuario: ");
-		gets(regUs.user);
-		comprobarUserAsist(regUs.user,b,archUs);
+		gets(auxUs);
+		comprobarUserAsist(regUs,b,archUs,auxUs);
 	}
 
 	printf("\n\n\t\t Requisitos de la contrasenia para ingreso\n");
@@ -286,8 +290,8 @@ void registroAsist(FILE *archUs)
 	while (b==0)
 	{
 		printf("\n\n\t\t Contrasenia: ");
-		gets(regUs.contra);
-		comprobarContAsist(regUs.contra,b);
+		gets(auxC);
+		comprobarContAsist(regUs,b,auxC);
 	}
 	
 	fwrite(&regUs, sizeof(usuario), 1, archUs);
@@ -295,35 +299,39 @@ void registroAsist(FILE *archUs)
 	fclose(archUs);
 }
 
-int usuarioRepetido(FILE *&archUs, usuario regUs.user)
+int usuarioRepetido(FILE *&archUs, usuario regUs,char auxUs[10])
 {
-	usuario regUs;
+
 	int b=1;
 	
 	rewind(archUs);
 	fread(&regUs,sizeof(usuario),1,archUs);
 	while(!feof(archUs))
 	{
-		if(strcmp(regUs.user,))
+		if(strcmp(regUs.user,auxUs)==0)
+		{
+			return b=0;
+		}
+		fread(&regUs,sizeof(usuario),1,archUs);
 	}
+	return b;
 }
 
-void comprobarUserAsist(usuario regUs.user, int &b,FILE *&archUs)
+void comprobarUserAsist(usuario regUs, int &b,FILE *&archUs,char auxUs[10])
 {
-	usuario regUs;
 	int largo,rep,c=0;
 	
-	largo = strlen(regUs.user);
-	rep = usuarioRepetido(archUs,regUs,user);
+	largo = strlen(auxUs);
+	rep = usuarioRepetido(archUs,regUs,auxUs);
 	if(rep==1)
 	{
 		if(largo>= 6 && largo<=10)
 		{
-			if(islower(regUs.user[0])!=0)
+			if(islower(auxUs[0])!=0)
 			{
 				for(int i=0;i<largo;i++)
 				{
-					if(isupper(regUs.user[i])!=0)
+					if(isupper(auxUs[i])!=0)
 					{
 						c++;
 					}
@@ -333,7 +341,7 @@ void comprobarUserAsist(usuario regUs.user, int &b,FILE *&archUs)
 					c=0;
 					for(int i=0;i<largo;i++)
 					{
-						if(isdigit(regUs.user[i])!=0)
+						if(isdigit(auxUs[i])!=0)
 						{
 							c++;
 						}
@@ -366,20 +374,23 @@ void comprobarUserAsist(usuario regUs.user, int &b,FILE *&archUs)
 	{
 		printf("\n\tError: el usuario ingresado ya existe\n");
 	}
+	
+	strcpy(regUs.user,auxUs);
+	fwrite(&regUs,sizeof(usuario),1,archUs);
 }
 
-void comprobarContAsist(usuario regUs.contra, int &b)
+void comprobarContAsist(usuario regUs, int &b,char auxC[32])
 {
-	usuario regUs;
 	char aux,aux1;
 	int largo,min=0,may=0,num=0;
+	FILE *archUs;
 	
-	largo = strlen(regUs.contra);
+	largo = strlen(auxC);
 	if(largo>= 6 && largo <= 32)
 	{
-		for(int i==;i<largo;i++)
+		for(int i=0;i<largo;i++)
 		{
-			if(isalnum(regUs.contra[i])==0)
+			if(isalnum(auxC[i])==0)
 			{
 				num=1;
 			}	
@@ -388,15 +399,15 @@ void comprobarContAsist(usuario regUs.contra, int &b)
 		{
 			for(int i=0;i<largo;i++)
 			{
-				if(isupper(regUs.contra[i])!=0)
+				if(isupper(auxC[i])!=0)
 				{
 					may=1;
 				}
-				else if(islower(regUs.contra[i])!=0)
+				else if(islower(auxC[i])!=0)
 				{
 					min=1;
 				}
-				else if(isdigit(regUs.contra[i])!=0)
+				else if(isdigit(auxC[i])!=0)
 				{
 					num=1;
 				}
@@ -407,7 +418,7 @@ void comprobarContAsist(usuario regUs.contra, int &b)
 				may=0;
 				for(int i=0;i<largo;i++)
 				{
-					if(isdigit(regUs.contra[i])!=0)
+					if(isdigit(auxC[i])!=0)
 					{
 						num++;
 						if(num==4)
@@ -416,7 +427,7 @@ void comprobarContAsist(usuario regUs.contra, int &b)
 							i=largo;
 						}
 					}
-					else if(isalpha(regUs.contra[i])!=0)
+					else if(isalpha(auxC[i])!=0)
 					{
 						num=0;
 					}
@@ -426,13 +437,13 @@ void comprobarContAsist(usuario regUs.contra, int &b)
 					num=0;
 					for(int i=0;i<largo;i++)
 					{
-						if(isalpha(regUs.contra[i])!=0)
+						if(isalpha(auxC[i])!=0)
 						{
 							num++;
 							if(num==2)
 							{
-								aux = toupper(regUs.contra[i]);
-								aux1 = toupper(regUs.contra[i-1]);
+								aux = toupper(auxC[i]);
+								aux1 = toupper(auxC[i-1]);
 								
 								if(aux1 == aux-1)
 								{
@@ -443,7 +454,7 @@ void comprobarContAsist(usuario regUs.contra, int &b)
 						}
 						else
 						{
-							num=0
+							num=0;
 						}
 					}
 					if(may==0)
@@ -474,7 +485,9 @@ void comprobarContAsist(usuario regUs.contra, int &b)
 	{
 		printf("\n\tError: la contrasenia debe tener entre 6-32 caracteres\n");
 	}
-
+	
+	strcpy(regUs.contra,auxC);
+	fwrite(&regUs,sizeof(usuario),1,archUs);
 }
 
 int atenciones()

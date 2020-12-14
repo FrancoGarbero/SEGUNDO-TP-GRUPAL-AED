@@ -3,6 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 
+typedef char palabra[60];
 
 struct usuario{
 	char user[10];
@@ -492,7 +493,75 @@ void comprobarContAsist(usuario regUs, int &b,char auxC[32])
 
 int atenciones()
 {
+	system ("CLS");
+	struct fecha
+	{
+		int dia;
+		int mes;
+		int anio;
+	};
+
+	struct registro//Mascota
+	{
+		palabra ApeYNom;
+		palabra Domicilio;
+		int DNI;
+		palabra Localidad;
+		float Peso;
+		int Telefono;
+		fecha fec;
+	};
+
+	struct fecha1
+	{
+		int dia;
+		int mes;
+		int anio;
+	};
+
+	struct registro1//Turno
+	{
+	int Matricula;
+	fecha1 fech;
+	int dni;
+	char Atencion[380];
+	};
 	
+	FILE *arch;
+	FILE *arch1;
+	
+	registro mascota;
+	registro1 turno;
+				
+	printf("*Listado de atenciones: \n\n");
+	
+	arch = fopen("Mascotas.dat","r+b");
+					
+	arch1 = fopen("Turnos.dat","r+b");
+					
+	fread(&mascota, sizeof (registro), 1, arch);
+					
+	while(!feof(arch))
+	{
+		_flushall();
+		puts(mascota.ApeYNom);
+		fread(&mascota, sizeof(registro), 1, arch);
+	}
+					
+	fread(&turno, sizeof (registro1), 1, arch1);
+					
+	while(!feof(arch1))
+	{
+		printf("Matricula del veterinario: %d\n", turno.Matricula);
+		printf("Fecha: %d/%d/%d\n", turno.fech.dia, turno.fech.mes, turno.fech.anio);
+							
+		fread(&turno, sizeof(registro1), 1, arch1);
+	}
+					
+	fclose(arch);
+	fclose(arch1);
+					
+	system("Pause");
 }
 
 int ranking()

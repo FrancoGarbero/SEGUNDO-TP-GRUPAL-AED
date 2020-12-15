@@ -136,13 +136,8 @@ main()
 				scanf("%2d",  &mascota.fec.mes);
 				printf("\nAnio: ");
 				scanf("%4d", &mascota.fec.anio);
-<<<<<<< HEAD
 			
 				fwrite(&mascota, sizeof (registro), 1, arch );
-=======
-				
-				fwrite(&mascota, sizeof(registro), 1, arch );
->>>>>>> ac4250dc18279c6b9023164892f8469044997853
 				
 				fclose(arch);
 				
@@ -152,7 +147,7 @@ main()
 			case 3:
 			{
 				system("CLS");	
-				arch1 = fopen("Turnos.dat","a+b");
+				arch1 = fopen("Turnos.dat","r+b");
 				if(arch1 == NULL)
 				{
 					fclose(arch1);
@@ -180,7 +175,7 @@ main()
 				printf("\nDetalle de la atencion: ");
 				gets(turno.Atencion);
 				
-				fwrite(&turno, sizeof(registro1), 1, arch1 );
+				fwrite(&turno, sizeof (registro1), 1, arch1 );
 				
 				fclose(arch1);
 				
@@ -200,49 +195,32 @@ main()
 				
 				arch1 = fopen("Turnos.dat","r+b");
 				
-<<<<<<< HEAD
 			
 				
 				fread(&revVet, sizeof (veterinario), 1, archVet);
 				fread(&mascota, sizeof (registro), 1, arch);
-=======
-				rewind(arch);
-				fread(&mascota, sizeof(registro), 1, arch);
-				
-				int c=0;
-				while(!feof(arch))
-				{
-					_flushall();
-					c++;
-					printf("%s",mascota.ApeYNom);
-					printf("%d",c);
-					fread(&mascota, sizeof(registro), 1, arch);
-					
-				}
-				rewind(arch1);
->>>>>>> ac4250dc18279c6b9023164892f8469044997853
 				fread(&turno, sizeof (registro1), 1, arch1);
 				
-				
-				while(!feof(arch) &&  !feof(arch1) && !feof(archVet))
+				if(turno.Matricula==revVet.matricula)
 				{
-					if(turno.Matricula==revVet.matricula)
+					while(!feof(arch) &&  !feof(arch1) && !feof(archVet))
 					{
-						puts(revVet.apynom);
-						puts(mascota.ApeYNom);
-						fread(&mascota, sizeof(registro), 1, arch);
-						
-						printf("Matricula del veterinario: %d\n", turno.Matricula);
-						printf("Fecha: %d/%d/%d\n", turno.fech.dia, turno.fech.mes, turno.fech.anio);
-						fread(&turno, sizeof(registro1), 1, arch1);
+							puts(revVet.apynom);
+							fread(&revVet, sizeof (veterinario), 1, archVet);
+							puts(mascota.ApeYNom);
+							fread(&mascota, sizeof(registro), 1, arch);
+							
+							printf("Matricula del veterinario: %d\n", turno.Matricula);
+							printf("Fecha: %d/%d/%d\n", turno.fech.dia, turno.fech.mes, turno.fech.anio);
+							fread(&turno, sizeof(registro1), 1, arch1);	
 					}
-					else
-					{
-						printf("Matricula incorrecta.");
-					}	
 				}
+				else
+				{
+					printf("Matricula incorrecta.");
+				}	
 				
-				fclose (archVet);
+				fclose(archVet);
 				fclose(arch);
 				fclose(arch1);
 				

@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-void menu(bool &salir, bool &login, FILE *vet);
-void inicioSesion(bool &login,int &copMatricula,FILE *vet);
+void menu(bool &salir, bool &login);
+void inicioSesion(bool &login,int &copMatricula);
 void listaEspera(int copMatricula);
 void registrarEvolucion();
-bool comprobacion(int auxUsuario,char auxContrasena[20],FILE *vet);
+bool comprobacion(int auxUsuario,char auxContrasena[20]);
 typedef char palabra[60];
 
 
@@ -48,7 +48,7 @@ struct registro//DATOS DE MASCOTA
  
 main()
 {
-	FILE *vet; 
+	 
 	bool salir=false,login=false;
 	
 		
@@ -56,7 +56,7 @@ main()
 	printf("\n-----------------------------------");
 	do
 	{
-		menu(salir,login,vet);	
+		menu(salir,login);	
 	}
 	while(salir==false);
 	
@@ -64,7 +64,7 @@ main()
 	
 }
 
-void menu(bool &salir, bool &login, FILE *vet)
+void menu(bool &salir, bool &login)
 {
 	int seleccion;
 	int copMatricula=0;//copia el numero de matrucula para comparar en turnos, asi no se tiene que recargar;
@@ -77,7 +77,7 @@ void menu(bool &salir, bool &login, FILE *vet)
 		{
 			case 1:
 				system("CLS");
-				inicioSesion(login,copMatricula,vet); 
+				inicioSesion(login,copMatricula); 
 				break;
 				
 			case 2:
@@ -117,7 +117,7 @@ void menu(bool &salir, bool &login, FILE *vet)
 	
 }
 
-void inicioSesion(bool &login,int &copMatricula,FILE *vet)
+void inicioSesion(bool &login,int &copMatricula)
 {
 	char auxContrasena[20];
 	int auxUsuario; 
@@ -132,7 +132,7 @@ void inicioSesion(bool &login,int &copMatricula,FILE *vet)
 		gets(auxContrasena);
 		_flushall();
 		
-		if(comprobacion(auxUsuario,auxContrasena,vet)==true)
+		if(comprobacion(auxUsuario,auxContrasena)==true)
 		{
 			login=true;
 			copMatricula=auxUsuario;//aqui se realizara la copia de la matricula
@@ -154,14 +154,14 @@ void listaEspera(int copMatricula)
 	int edad=0;
 	
 	FILE *T ,*M;//T por turno, M por mascota
-	T=fopen("turnos.dat","r");
-	M=fopen("mascotas.dat","r");
+	T=fopen("Turnos.dat","r");
+	M=fopen("Mascotas.dat","r");
 
 	int contador=1; //para numerar turnos, Puramente visual
 	fread(&turno, sizeof(registro1), 1, T);
 	fread(&mascota, sizeof(registro), 1, M);
 
-	while(!feof(T));
+	while(!feof(T))
 	{
 		if(turno.Matricula==copMatricula)
 		{
@@ -233,58 +233,59 @@ void registrarEvolucion()
 	registro mascota;
 	registro1 turnos;
 	FILE *M,*T;
-	M=fopen("mascotas.dat","r");
-	T=fopen("turnos.dat","a+b");
-	fread(&mascota,sizeof (registro),1,M);
-	fread(&turnos,sizeof (registro1),1,T);
+	M=fopen("Mascotas.dat","r+b");
+	T=fopen("Turnos.dat","r+b");
+	
 
 	printf("Buscar mascota: Nombre y apellido: ");
 	_flushall();
 	gets(auxNombre);
-	_flushall();
-	do
+	
+	rewind(M);
+	rewind(T);
+	
+	fread(&mascota,sizeof (registro),1,M);
+	fread(&turnos,sizeof (registro1),1,T);
+	
+	while(!feof(M) && hit==false)
 	{
 		if(strcmp(auxNombre,mascota.ApeYNom)==0)
 		{
-			while(!feof(T));
+			while(!feof(T))
 			{
+				
 				if(turnos.dni==mascota.DNI)
 				{
+					hit=true;
 					printf("Evolucion de la mascota,(enter para finalizar): ");
-					_flushall();
 					gets(auxEvolucion);
 					strcpy(turnos.Atencion,auxEvolucion);
-					hit=true;
+					printf("\nDiagnostico actualizado: ");
+					puts(turnos.Atencion);
 					fwrite(&turnos,sizeof (registro1),1,T);
-					
+					break;
 				}
-				
-				
-			}
-			if(hit==true)
-			{
-				break;
-			}
-			fread(&turnos,sizeof (registro1),1,T);
+				fread(&turnos,sizeof (registro1),1,T);	
+			}			
 		}
 		fread(&mascota,sizeof (registro),1,M);
-		
-	}while(!feof(M) && hit==false);
-	
-	if(hit==false);
-	{
-		printf("No se encrontro la mascota");
-		system("PAUSE");
 	}
-	
+	/*if(hit==false);
+	{
+		printf("No se encrontro la mascotas");
+		system("PAUSE");
+	}*/
+	system("PAUSE");
 }
 
-bool comprobacion(int auxUsuario,char auxContrasena[20],FILE *vet)
+bool comprobacion(int auxUsuario,char auxContrasena[20])
 {
+	FILE *vet;
 	bool inicio=false;
 	veterinario regVet;
-	vet=fopen("Veterinarios.dat","r");
+	vet=fopen("Veterinarios.dat","r+b");
 	
+	rewind(vet);
 	fread(&regVet, sizeof(veterinario), 1, vet);
 
 	if (vet==NULL)
@@ -294,6 +295,8 @@ bool comprobacion(int auxUsuario,char auxContrasena[20],FILE *vet)
 	}
 	while(!feof(vet))
 	{
+		
+		printf("Matricula: %d", regVet.matricula);
 		if(auxUsuario==regVet.matricula)
 		{
 			printf("\nEl usuario existe");
@@ -301,8 +304,7 @@ bool comprobacion(int auxUsuario,char auxContrasena[20],FILE *vet)
 			inicio=true;
 			break;
 		}
-		fread(&regVet, sizeof(veterinario), 1, vet);
-		
+		fread(&regVet, sizeof(veterinario), 1, vet);	
 	}
 	
 	if(inicio==true)

@@ -43,7 +43,7 @@ main()
 		archVet = fopen("Veterinarios.dat","a+b");
 	}
 	
-	veterinario revVet;
+	veterinario regVet;
 	usuario regUs;
 		
 	int opc=0;

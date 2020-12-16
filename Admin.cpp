@@ -163,6 +163,8 @@ void registroVet(FILE *archVet)
 	scanf("%d",&regVet.dni);
 	printf("\n\n\t\t Telefono: ");
 	scanf("%d",&regVet.telefono);
+	fwrite(&regVet, sizeof(veterinario), 1, archVet);
+	
 	printf("\n\n\t\t Requisitos de la contrasenia para ingreso\n");
 	printf("\n\n\t *Debe contener como mínimo una letra mayuscula, una minuscula y un numero\n");
 	printf("\n\n\t *Debe tener entre 6-32 caracteres\n");	
@@ -179,7 +181,6 @@ void registroVet(FILE *archVet)
 		comprobarContVet(regVet,b,auxCont);
 	}	
 	
-	fwrite(&regVet, sizeof(veterinario), 1, archVet);
 	fclose(archVet);
 	system("pause");
 }
@@ -543,32 +544,62 @@ void atenciones()
 	
 	FILE *arch;
 	FILE *arch1;
+	FILE *archVet;
 	
 	registro mascota;
 	registro1 turno;
+	veterinario regVet;
 				
-	printf("*Listado de atenciones: \n\n");
+	printf("*Listado de atenciones por mes: \n\n");
+	
+	archVet = fopen("Veterinarios.dat","rb");
 	
 	arch = fopen("Mascotas.dat","rb");
 					
 	arch1 = fopen("Turnos.dat","rb");
 					
+	rewind(archVet);
+	rewind (arch);
+	rewind (arch1);
+	
+	fread(&regVet, sizeof (veterinario), 1, archVet);
 	fread(&mascota, sizeof (registro), 1, arch);
 	fread(&turno, sizeof (registro1), 1, arch1);
 					
-	while(!feof(arch) && !feof(arch1))
-	{
-		puts(mascota.ApeYNom);
-		fread(&mascota, sizeof(registro), 1, arch);
-		
-		printf("Matricula del veterinario: %d\n", turno.Matricula);
-		printf("Fecha: %d/%d/%d\n", turno.fech.dia, turno.fech.mes, turno.fech.anio);
+	while (!feof(archVet) && !feof(arch) && !feof(arch1))
+				{
+					if(turno.fech.mes==1)
+					{
+						printf("Enero (Mes %d):", turno.fech.mes);
+						rewind(archVet);
+						rewind(arch);
+						rewind(arch1);
+						
+						fread(&mascota, sizeof(registro), 1, arch);
+						fread(&regVet, sizeof (veterinario), 1, archVet);
+						fread(&turno, sizeof(registro1), 1, arch1);
 							
-		fread(&turno, sizeof(registro1), 1, arch1);
-	}
-					
-	fclose(arch);
-	fclose(arch1);
+						while(!feof(arch) &&  !feof(arch1) && !feof(archVet))
+						{
+							printf("\nVeterinario: ");
+							puts(regVet.apynom);
+							fread(&regVet, sizeof (veterinario), 1, archVet);
+								
+							printf("\nMascota: ");
+							puts(mascota.ApeYNom);
+							fread(&mascota, sizeof(registro), 1, arch);
+								
+							printf("\nMatricula del veterinario: %d", turno.Matricula);
+							printf("\nFecha: %d/%d/%d", turno.fech.dia, turno.fech.mes, turno.fech.anio);
+							fread(&turno, sizeof(registro1), 1, arch1);	
+						}
+					}
+				}
+			
+				
+				fclose(archVet);
+				fclose(arch);
+				fclose(arch1);
 					
 	system("Pause");
 }

@@ -201,28 +201,42 @@ main()
 				fread(&regVet, sizeof (veterinario), 1, archVet);
 				fread(&mascota, sizeof (registro), 1, arch);
 				fread(&turno, sizeof (registro1), 1, arch1);
-				
-				if(turno.Matricula==regVet.matricula)
+			
+				while (!feof(archVet) && !feof(arch) && !feof(arch1))
 				{
-					while(!feof(arch) &&  !feof(arch1))
+					
+					if(turno.Matricula==regVet.matricula)
 					{
-						printf("Veterinario: \n");
-						puts(regVet.apynom);
-						fread(&regVet, sizeof (veterinario), 1, archVet);
-							
-						printf("Mascota: \n");
-						puts(mascota.ApeYNom);
+						rewind(archVet);
+						rewind(arch);
+						rewind(arch1);
+						
 						fread(&mascota, sizeof(registro), 1, arch);
+						fread(&regVet, sizeof (veterinario), 1, archVet);
+						fread(&turno, sizeof(registro1), 1, arch1);
 							
-						printf("Matricula del veterinario: %d\n", turno.Matricula);
-						printf("Fecha: %d/%d/%d\n", turno.fech.dia, turno.fech.mes, turno.fech.anio);
-						fread(&turno, sizeof(registro1), 1, arch1);	
+						while(!feof(arch) &&  !feof(arch1) && !feof(archVet))
+						{
+							printf("\nVeterinario: ");
+							puts(regVet.apynom);
+							fread(&regVet, sizeof (veterinario), 1, archVet);
+								
+							printf("\nMascota: ");
+							puts(mascota.ApeYNom);
+							fread(&mascota, sizeof(registro), 1, arch);
+								
+							printf("\nMatricula del veterinario: %d", turno.Matricula);
+							printf("\nFecha: %d/%d/%d", turno.fech.dia, turno.fech.mes, turno.fech.anio);
+							fread(&turno, sizeof(registro1), 1, arch1);	
+						}
+					
 					}
-				}
-				else
-				{
+					else
+					{
 					printf("La Matricula ingresada no es correcta.\n");
-				}	
+					}		
+				}
+			
 				
 				fclose(archVet);
 				fclose(arch);

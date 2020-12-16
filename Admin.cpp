@@ -542,6 +542,7 @@ void atenciones()
 {
 	system ("CLS");
 	
+	int ME;
 	FILE *arch;
 	FILE *arch1;
 	FILE *archVet;
@@ -550,7 +551,9 @@ void atenciones()
 	registro1 turno;
 	veterinario regVet;
 				
-	printf("*Listado de atenciones por mes: \n\n");
+	printf("*Listado de atenciones por mes\n\n");
+	printf("Ingrese el mes: ");
+	scanf("%d", &ME);
 	
 	archVet = fopen("Veterinarios.dat","rb");
 	
@@ -568,9 +571,9 @@ void atenciones()
 					
 	while (!feof(archVet) && !feof(arch) && !feof(arch1))
 				{
-					if(turno.fech.mes==1)
+					if(ME==turno.fech.mes)
 					{
-						printf("Enero (Mes %d):", turno.fech.mes);
+						printf("Mes %d:", turno.fech.mes);
 						rewind(archVet);
 						rewind(arch);
 						rewind(arch1);

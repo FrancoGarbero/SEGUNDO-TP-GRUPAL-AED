@@ -60,8 +60,8 @@ void registroAsist(FILE *archUs);
 void comprobarUserAsist(usuario regUs, int &b,FILE *&archUs,char auxUs[10]);
 void comprobarContAsist(usuario regUs, int &b,char auxC[32]);
 int usuarioRepetido(FILE *&archUs, usuario regUs,char auxUs[10]);
-int atenciones();
-int ranking();
+void atenciones();
+void ranking();
 
 main()
 {
@@ -537,7 +537,7 @@ void comprobarContAsist(usuario regUs, int &b,char auxC[32])
 	fwrite(&regUs,sizeof(usuario),1,archUs);
 }
 
-int atenciones()
+void atenciones()
 {
 	system ("CLS");
 	
@@ -573,7 +573,7 @@ int atenciones()
 	system("Pause");
 }
 
-int ranking()
+void ranking()
 {
 	system("CLS");
 	palabra VET[100];

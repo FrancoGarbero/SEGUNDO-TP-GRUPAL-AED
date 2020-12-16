@@ -65,16 +65,16 @@ int ranking();
 
 main()
 {
-	FILE *archUs = fopen("Usuarios.dat","r+b");
+	FILE *archUs = fopen("Usuarios.dat","a+b");
 	if(archUs == NULL){
 		fclose(archUs);
-		archUs = fopen("Usuarios.dat","a+b");
+		archUs = fopen("Usuarios.dat","w+b");
 	}
 	
-	FILE *archVet = fopen("Veterinarios.dat","r+b");
+	FILE *archVet = fopen("Veterinarios.dat","a+b");
 	if(archVet == NULL){
 		fclose(archVet);
-		archVet = fopen("Veterinarios.dat","a+b");
+		archVet = fopen("Veterinarios.dat","w+b");
 	}
 	
 	veterinario regVet;
@@ -147,7 +147,6 @@ int menuPrincipal()
 
 void registroVet(FILE *archVet)
 {
-	archVet=fopen("Veterinarios.dat","r+b");
 	veterinario regVet;
 	int b;
 	char auxCont[32];
@@ -299,7 +298,6 @@ void comprobarContVet(veterinario regVet, int &b,char auxCont[32])
 void registroAsist(FILE *archUs)
 {
 	usuario regUs;
-	archUs = fopen("Usuarios.dat","r+b");
 	int b;
 	char auxUs[10],auxC[32];
 	
@@ -551,9 +549,9 @@ int atenciones()
 				
 	printf("*Listado de atenciones: \n\n");
 	
-	arch = fopen("Mascotas.dat","r+b");
+	arch = fopen("Mascotas.dat","rb");
 					
-	arch1 = fopen("Turnos.dat","r+b");
+	arch1 = fopen("Turnos.dat","rb");
 					
 	fread(&mascota, sizeof (registro), 1, arch);
 	fread(&turno, sizeof (registro1), 1, arch1);
@@ -586,12 +584,12 @@ int ranking()
 	int v[100],i=0,x,a;
 	char aux[60];
 	
-	archVet = fopen("Veterinarios.dat","r+b");
+	archVet = fopen("Veterinarios.dat","rb");
 	
 		fread(&regVet,sizeof(veterinario),1,archVet);
 		while(!feof(archVet))
 		{
-			arch1 = fopen("Turnos.dat","r+b");
+			arch1 = fopen("Turnos.dat","rb");
 				x=0;
 			    fread(&turno,sizeof(registro1),1,arch1);
 			    while(!feof(arch1))

@@ -229,7 +229,6 @@ main()
 							printf("\nFecha: %d/%d/%d", turno.fech.dia, turno.fech.mes, turno.fech.anio);
 							fread(&turno, sizeof(registro1), 1, arch1);	
 						}
-					
 					}
 					else
 					{

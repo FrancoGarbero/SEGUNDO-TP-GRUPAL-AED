@@ -19,6 +19,40 @@ struct veterinario{
 	char contra[32];
 };
 
+struct fecha
+{
+		int dia;
+		int mes;
+		int anio;
+	};
+
+	struct registro//Mascota
+	{
+		palabra ApeYNom;
+		palabra Domicilio;
+		int DNI;
+		palabra Localidad;
+		float Peso;
+		int Telefono;
+		fecha fec;
+	};
+
+	struct fecha1
+	{
+		int dia;
+		int mes;
+		int anio;
+	};
+
+	struct registro1//Turno
+	{
+	int Matricula;
+	fecha1 fech;
+	int dni;
+	char Atencion[380];
+	};
+	
+	
 int menuPrincipal();
 void registroVet(FILE *archVet);
 void comprobarContVet(veterinario regVet, int &b,char auxCont[32]);
@@ -45,6 +79,12 @@ main()
 	
 	veterinario regVet;
 	usuario regUs;
+	
+	FILE *arch;
+	FILE *arch1;
+	
+	registro mascota;
+	registro1 turno;
 		
 	int opc=0;
 	
@@ -52,23 +92,31 @@ main()
 		opc= menuPrincipal();
 		switch(opc){
 			case 1:
-			{				
+			{
+				system("CLS");			
 				registroVet(archVet);
+				system("pause");
 				break;
 			}
 			case 2:
 			{
-				registroAsist(archUs);				
+				system("CLS");
+				registroAsist(archUs);
+				system("pause");				
 				break;
 			}
 			case 3:
 			{
+				system("CLS");
 				atenciones();
+				system("pause");
 				break;
 			}	
 			case 4:
 			{
+				system("CLS");
 				ranking();
+				system("pause");
 				break;
 			}
 			
@@ -105,7 +153,6 @@ void registroVet(FILE *archVet)
 	char auxCont[32];
 	
 	_flushall();
-	system("CLS");
 	printf("\n\n\t\t");
 	printf("\n\n\t\t           INICIO REGISTRO VETERINARIO                ");
 	printf("\n\n\t\t======================================================");
@@ -135,7 +182,7 @@ void registroVet(FILE *archVet)
 	
 	fwrite(&regVet, sizeof(veterinario), 1, archVet);
 	fclose(archVet);
-	
+	system("pause");
 }
 
 void comprobarContVet(veterinario regVet, int &b,char auxCont[32])
@@ -298,6 +345,7 @@ void registroAsist(FILE *archUs)
 	fwrite(&regUs, sizeof(usuario), 1, archUs);
 	
 	fclose(archUs);
+	system("pause");
 }
 
 int usuarioRepetido(FILE *&archUs, usuario regUs,char auxUs[10])
@@ -494,38 +542,6 @@ void comprobarContAsist(usuario regUs, int &b,char auxC[32])
 int atenciones()
 {
 	system ("CLS");
-	struct fecha
-	{
-		int dia;
-		int mes;
-		int anio;
-	};
-
-	struct registro//Mascota
-	{
-		palabra ApeYNom;
-		palabra Domicilio;
-		int DNI;
-		palabra Localidad;
-		float Peso;
-		int Telefono;
-		fecha fec;
-	};
-
-	struct fecha1
-	{
-		int dia;
-		int mes;
-		int anio;
-	};
-
-	struct registro1//Turno
-	{
-	int Matricula;
-	fecha1 fech;
-	int dni;
-	char Atencion[380];
-	};
 	
 	FILE *arch;
 	FILE *arch1;
@@ -540,18 +556,13 @@ int atenciones()
 	arch1 = fopen("Turnos.dat","r+b");
 					
 	fread(&mascota, sizeof (registro), 1, arch);
-					
-	while(!feof(arch))
-	{
-		_flushall();
-		puts(mascota.ApeYNom);
-		fread(&mascota, sizeof(registro), 1, arch);
-	}
-					
 	fread(&turno, sizeof (registro1), 1, arch1);
 					
-	while(!feof(arch1))
+	while(!feof(arch) && !feof(arch1))
 	{
+		puts(mascota.ApeYNom);
+		fread(&mascota, sizeof(registro), 1, arch);
+		
 		printf("Matricula del veterinario: %d\n", turno.Matricula);
 		printf("Fecha: %d/%d/%d\n", turno.fech.dia, turno.fech.mes, turno.fech.anio);
 							
@@ -566,5 +577,64 @@ int atenciones()
 
 int ranking()
 {
+	system("CLS");
+	palabra VET[100];
+	registro1 turno;
+	veterinario regVet;
+	FILE *arch1;
+	FILE *archVet;
+	int v[100],i=0,x,a;
+	char aux[60];
 	
+	archVet = fopen("Veterinarios.dat","r+b");
+	
+		fread(&regVet,sizeof(veterinario),1,archVet);
+		while(!feof(archVet))
+		{
+			arch1 = fopen("Turnos.dat","r+b");
+				x=0;
+			    fread(&turno,sizeof(registro1),1,arch1);
+			    while(!feof(arch1))
+			    {	
+				    		    	
+			    	if(regVet.matricula == turno.Matricula /*&& AuxT.borrado == true*/)
+			    	{
+			    		x++;
+			    	}
+			    	
+			    	fread(&turno,sizeof(registro1),1,arch1);
+			    	
+			    }
+			    v[i]=x;
+			    strcpy(VET[i],regVet.apynom);
+			    i++;
+			    fclose(arch1);
+			fread(&regVet,sizeof(veterinario),1,archVet);
+		}
+		fclose(archVet);
+	
+	for(int j=0;j<i;j++)
+	{
+		for(int k=j;k<i;k++)
+		{
+			if(v[j]<v[k])
+			{
+				a = v[j];
+				v[j] = v[k];
+				v[k] = a;
+				strcpy(aux,VET[j]);
+				strcpy(VET[j],VET[k]);
+				strcpy(VET[k],aux);
+			
+			}
+		
+		}	
+	}
+	
+	printf("\n\n\t\tListado de atenciones en ranking: ");
+	for(int j=0;j<i;j++)
+	{
+		printf("\n\n\t\%d-%s: %d\n",j+1,VET[j],v[j]);	
+	}
+	system ("pause");
 }

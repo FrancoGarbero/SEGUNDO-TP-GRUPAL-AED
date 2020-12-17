@@ -1,8 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <conio.h>
+#include <windows.h>
 
 void menu(bool &salir, bool &login);
+void gotoxy(int x,int y);
+void cuadro(int x1, int y1, int x2, int y2);
 void inicioSesion(bool &login,int &copMatricula);
 void listaEspera(int copMatricula);
 void registrarEvolucion();
@@ -48,6 +52,7 @@ struct registro//DATOS DE MASCOTA
  
 main()
 {
+	system("color B0");
 	 
 	bool salir=false,login=false;
 	

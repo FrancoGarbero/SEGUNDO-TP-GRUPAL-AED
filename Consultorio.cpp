@@ -229,13 +229,16 @@ void registrarEvolucion()
 {
 	bool hit=false;//Se fija si encrontro la mascota, informa si no lo hizo;
 	int auxDni;
-	char auxEvolucion[380],auxNombre[60];
+	char auxEvolucion[380],auxNombre[60],auxVeterinario[40]="//";
+	
+	
 	registro mascota;
 	registro1 turnos;
-	FILE *M,*T;
+	veterinario regVet;
+	FILE *M,*T,*V;
 	M=fopen("Mascotas.dat","r+b");
 	T=fopen("Turnos.dat","r+b");
-	
+	V=fopen("Veterinarios.dat","r+b");
 
 	printf("Buscar mascota: Nombre y apellido: ");
 	_flushall();
@@ -243,9 +246,12 @@ void registrarEvolucion()
 	
 	rewind(M);
 	rewind(T);
+	rewind(V);
 	
 	fread(&mascota,sizeof (registro),1,M);
 	fread(&turnos,sizeof (registro1),1,T);
+	fread(&regVet,sizeof (veterinario),1,V);
+	
 	
 	while(!feof(M) && hit==false)
 	{
@@ -259,7 +265,23 @@ void registrarEvolucion()
 					hit=true;
 					printf("Evolucion de la mascota,(enter para finalizar): ");
 					gets(auxEvolucion);
-					strcpy(turnos.Atencion,auxEvolucion);
+					while(!feof(V))
+					{
+						if(turnos.Matricula==regVet.matricula)
+						{
+							strcat(auxVeterinario,regVet.apynom);
+							break;
+						}
+						
+						fread(&regVet,sizeof (veterinario),1,V);
+					}
+					
+					strcat(auxEvolucion,auxVeterinario);
+					
+					
+					strcat(turnos.Atencion,auxEvolucion);
+					
+					
 					printf("\nDiagnostico actualizado: ");
 					puts(turnos.Atencion);
 					fwrite(&turnos,sizeof (registro1),1,T);
@@ -301,6 +323,13 @@ bool comprobacion(int auxUsuario,char auxContrasena[20])
 		{
 			printf("\nEl usuario existe");
 			//a continuacion se compararia la contrasena IMPORTANTEEEEE
+			if (strcmp(regVet.contra,auxContrasena)==0)
+			{
+				inicio=true;
+				
+				break;
+					
+			}
 			inicio=true;
 			break;
 		}

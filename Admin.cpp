@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <conio.h>
+#include <windows.h>
 
 typedef char palabra[60];
 
@@ -54,6 +56,8 @@ struct fecha
 	
 	
 int menuPrincipal();
+void gotoxy(int x,int y);
+void cuadro(int x1, int y1, int x2, int y2);
 void registroVet(FILE *archVet);
 void comprobarContVet(veterinario regVet, int &b,char auxCont[32]);
 void registroAsist(FILE *archUs);
@@ -65,6 +69,7 @@ void ranking();
 
 main()
 {
+	system("color B0");
 	FILE *archUs = fopen("Usuarios.dat","a+b");
 	if(archUs == NULL){
 		fclose(archUs);
@@ -95,7 +100,7 @@ main()
 			{
 				system("CLS");			
 				registroVet(archVet);
-				system("pause");
+				system("PAUSE");
 				break;
 			}
 			case 2:
@@ -182,7 +187,6 @@ void registroVet(FILE *archVet)
 	}	
 	
 	fclose(archVet);
-	system("pause");
 }
 
 void comprobarContVet(veterinario regVet, int &b,char auxCont[32])
@@ -536,6 +540,7 @@ void comprobarContAsist(usuario regUs, int &b,char auxC[32])
 	
 	strcpy(regUs.contra,auxC);
 	fwrite(&regUs,sizeof(usuario),1,archUs);
+	
 }
 
 void atenciones()
@@ -629,7 +634,7 @@ void ranking()
 			    while(!feof(arch1))
 			    {	
 				    		    	
-			    	if(regVet.matricula == turno.Matricula /*&& AuxT.borrado == true*/)
+			    	if(regVet.matricula == turno.Matricula)
 			    	{
 			    		x++;
 			    	}

@@ -1,11 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <windows.h>
+#include <conio.h>
 
 typedef char palabra[60];
 
 int menuPrincipal();
+void gotoxy(int x,int y);
+void cuadro(int x1, int y1, int x2, int y2);
 void inicioSesion(bool &login);
 bool comprobacion(char auxUsuario[10], char auxContrasena[20]);
 
@@ -59,6 +62,7 @@ struct veterinario//Veterinario
 
 main()
 {
+	system("color B0");
 	int opc=0;
 	registro mascota; //Declarar registro de mascotas
 	FILE*arch;//Variable puntero de mascotas
@@ -328,8 +332,13 @@ bool comprobacion(char auxUsuario[10],char auxContrasena[20])
 		{
 			printf("\nEl usuario existe");
 			//a continuacion se compararia la contrasena
-			inicio=true;
+			if(strcmp(auxContrasena, regUs.contra)==0)
+			{
+				printf("\ny la contrasena existe");
+				inicio=true;
+			}
 			system("PAUSE");
+			
 		}
 		fread(&regUs, sizeof(usuario), 1, archUs);	
 	}
